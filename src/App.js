@@ -1,39 +1,34 @@
-// import TranslateProvider from './TransContext';
-// import translation from './Translation';
-// import TransScreen from './TransScreen';
 import React, {useReducer, useState} from 'react';
-
-const ADD = 'add';
-
-const initialState = {
-  toDos: [],
-};
-
-const addToDo = (state, action) => {
-  switch (action.type) {
-    case ADD:
-      return {
-        toDos: [[...state.toDos], {text: action.payload}],
-      };
-    default:
-      return;
-  }
-};
+import addToDo, {ADD, COM, DEL, initialState, UNCOM} from './reducer';
 
 const App = () => {
   const [state, dispatch] = useReducer(addToDo, initialState);
-  const [newTodo, setNewTodo] = useState('');
+  const [newTodoArray, setNewTodoArray] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch({type: ADD, payload: newTodo});
+    dispatch({type: ADD, actionSubmit: newTodoArray, completed: false});
+    setNewTodoArray('');
   };
   const handleChange = (event) => {
     const {value} = event.target;
-    console.log(value);
-    setNewTodo(value);
+    setNewTodoArray(value);
   };
 
+  const handleDispatch = (toDo) => {
+    if (toDo.completed) {
+      dispatch({
+        type: UNCOM,
+        completeItem: toDo.id,
+      });
+    } else {
+      dispatch({
+        type: COM,
+        completeItem: toDo.id,
+      });
+    }
+  };
+  console.log(state.todoArray, 'state');
   return (
     <>
       <h1>add to do</h1>
@@ -41,22 +36,40 @@ const App = () => {
         <form onSubmit={handleSubmit}>
           <input
             onChange={handleChange}
-            value={newTodo}
+            value={newTodoArray}
             placeholder="write a to do"
+            type="text"
           ></input>
-          <button onClick={() => dispatch(ADD)}>+</button>
+          <button>+</button>
         </form>
       </div>
       <ul>
-        <h2>To Dos</h2>
-        {state.toDos.map((toDo, index) => (
-          <li key={index}>{toDo.text}</li>
-        ))}
+        {state.todoArray.length !== 0 && (
+          <>
+            <h2>To Dos</h2>
+            {state.todoArray.map(
+              (toDo, index) =>
+                toDo.text && (
+                  <li
+                    style={{
+                      textDecoration: toDo.completed ? 'line-through' : '',
+                    }}
+                    key={toDo.id}
+                  >
+                    <span> {toDo.text} </span>
+                    <button
+                      onClick={() => dispatch({type: DEL, deleteItem: toDo.id})}
+                    >
+                      −
+                    </button>
+                    <button onClick={() => handleDispatch(toDo)}>✓</button>
+                  </li>
+                )
+            )}
+          </>
+        )}
       </ul>
     </>
-    // <TranslateProvider defaultLang="en" translation={translation}>
-    //   <TransScreen />
-    // </TranslateProvider>
   );
 };
 
