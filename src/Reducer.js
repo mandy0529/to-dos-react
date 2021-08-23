@@ -1,9 +1,5 @@
 import uuid from 'uuid/v4';
-
-export const ADD = 'add';
-export const DEL = 'delete';
-export const COM = 'compelete';
-export const UNCOM = 'uncompelete';
+import {ADD, COM, DEL, UNCOM} from './components/action';
 
 export const initialState = {
   todoArray: [],
@@ -49,19 +45,6 @@ const addToDo = (state, action) => {
         ...state,
         todoArray: cancleList,
       };
-
-    //   const target = state.todoArray.find(
-    //     (item) => item.id === action.completeItem
-    //   );
-    //   console.log(target);
-    //   const completedTarget = {...target, completed: true};
-    //   console.log(completedTarget, '나올까?');
-    //   const targetIndex = state.todoArray.indexOf(target);
-    //   console.log(targetIndex, '타겟');
-    //   return {
-    //     ...state,
-    //     todoArray: [...state.todoArray,{}],
-    //   };
 
     default:
       return;
